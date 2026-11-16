@@ -3,6 +3,7 @@
 A Formula 1 season dashboard and race predictor.
 
 Demo hosted on github pages.
+[site](https://edwinpaul121.github.io/pitwall/)
 
 **Open `index.html` in a browser.** There are three pages: Overview, Live and News. No server or install needed. `dist/pitwall.html` is the same app in a single file you can share.
 
