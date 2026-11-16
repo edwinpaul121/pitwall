@@ -1,0 +1,46 @@
+# macOS / Windows clutter (Finder metadata reveals folder contents)
+.DS_Store
+**/.DS_Store
+._*
+Thumbs.db
+desktop.ini
+
+# Editors and IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Claude Code: personal settings and local state (launch.json is kept)
+.claude/settings.local.json
+.claude/.cc-writes/
+.claude/worktrees/
+
+# Python (build.py)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Secrets and environment files (the app uses none — keep it that way)
+.env
+.env.*
+*.pem
+*.key
+
+# Logs and scratch
+*.log
+npm-debug.log*
+tmp/
+.cache/
+
+# Hosting tool output and local state
+.netlify/
+.vercel/
+.wrangler/
+node_modules/
+
+# Note: dist/ is committed on purpose. index.html loads dist/bundle.js, so a
+# fresh clone works by just opening index.html. Run `python3 build.py` after
+# editing js/ and commit the rebuilt dist/ files.
