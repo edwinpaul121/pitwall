@@ -47,26 +47,3 @@ The source is in `js/` (ES modules) and `css/styles.css`. After changing a JS fi
 ```bash
 python3 build.py
 ```
-
-## Hosting safely
-The app is static, with no server, logins or secrets, so any static host works (GitHub Pages, Netlify, Cloudflare Pages, Vercel).
-
-**Deploy only:** `index.html`, `css/` and `dist/bundle.js`. `dist/pitwall.html` is the single-file version for sharing; it works too, but it isn't needed. Don't upload `.claude/`, `js/`, `build.py`, `DESIGN.md` or `.DS_Store`.
-
-**Built-in protections**
-- Every OpenF1 and Open-Meteo response is cleaned before use (`sanitizeRows` in `js/util.js`). Numbers must be real numbers, team colours must be 6-digit hex, and image/audio URLs must be `https` on formula1.com (team radio: livetiming.formula1.com only).
-- News links and images must be plain `http(s)` addresses, so `javascript:` and `data:` links are dropped. Stories without a safe link are skipped.
-- All text from APIs and feeds is HTML-escaped when shown. News summaries are parsed with an inert `DOMParser`, which can't run scripts.
-- A Content Security Policy (in `index.html`) only allows the app's own script and the APIs above. In `dist/pitwall.html` the one inline script is allowed by its SHA-256 hash, which `build.py` recalculates each build. There are no inline event handlers.
-
-**Add these response headers on your host** (they can't be set from inside the page):
-```
-X-Frame-Options: DENY
-Content-Security-Policy: frame-ancestors 'none'
-X-Content-Type-Options: nosniff
-Referrer-Policy: strict-origin-when-cross-origin
-Permissions-Policy: camera=(), microphone=(), geolocation=()
-```
-On Netlify or Cloudflare Pages, put these in a `_headers` file under `/*`. On Vercel, use `headers` in `vercel.json`.
-
-**If you add a new data source**, add its domain to `connect-src` (or `img-src` / `media-src`) in the CSP meta tag in `index.html`, then rebuild.
