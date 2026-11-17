@@ -16,6 +16,7 @@ import {
   esc,
   pct,
   tint,
+  tintBg,
   trackTime,
   localTime,
   dateRange,
@@ -367,7 +368,7 @@ function renderPrediction() {
 
   const podiumCard = (r, place) => {
     const d = r.d;
-    return `<div class="podium-card p${place}" style="background:${tint(d.colour, 20)}">
+    return `<div class="podium-card p${place}" style="${tintBg(d.colour, d.team)}">
       <div class="pos">Predicted ${ordinal(place)}</div>
       <div class="who">${esc(firstName(d))}<br>${esc(shortName(d))}</div>
       <div class="team">${esc(d.team)}</div>
@@ -560,7 +561,7 @@ function renderStandings() {
   let banner = '';
   if (decided) {
     const d = driver(leader.number);
-    banner = `<div class="card champ-banner" style="background:${tint(d.colour, 18)}">
+    banner = `<div class="card champ-banner" style="${tintBg(d.colour, d.team)}">
       <div class="txt">
         <div class="k">${season.next ? 'Mathematically confirmed' : `${season.year} World Champion`}</div>
         <h3>${esc(d.name)} is the ${season.year} World Champion.</h3>
@@ -576,7 +577,7 @@ function renderStandings() {
       .slice(0, 3)
       .map((r) => {
         const d = driver(r.number);
-        return `<div class="leader-card" style="background:${tint(d.colour, 17)}">
+        return `<div class="leader-card" style="${tintBg(d.colour, d.team)}">
           <div class="pos">${ordinal(r.position)} · ${esc(d.team)}</div>
           <div class="who">${esc(d.name)}</div>
           <div class="pts">${r.points}<small> pts</small></div>
@@ -997,6 +998,44 @@ function renderNews() {
     })
   );
 }
+
+// ---------------------------------------------------------------- theme
+// Auto follows the OS; Light / Dark override it. Stored per viewer.
+const THEMES = ['auto', 'light', 'dark'];
+const THEME_LABEL = { auto: 'Theme: automatic', light: 'Theme: light', dark: 'Theme: dark' };
+const THEME_ICON = { auto: 'auto', light: 'sun', dark: 'moon' };
+
+function readTheme() {
+  try {
+    const t = localStorage.getItem('pitwall:theme');
+    return THEMES.includes(t) ? t : 'auto';
+  } catch {
+    return 'auto';
+  }
+}
+
+function applyTheme(theme) {
+  const root = document.documentElement;
+  if (theme === 'auto') root.removeAttribute('data-theme');
+  else root.setAttribute('data-theme', theme);
+  const btn = $('#theme-toggle');
+  if (btn) {
+    btn.innerHTML = icon(THEME_ICON[theme], 16);
+    btn.title = THEME_LABEL[theme];
+    btn.setAttribute('aria-label', `${THEME_LABEL[theme]}. Click to change.`);
+  }
+}
+
+let currentTheme = readTheme();
+applyTheme(currentTheme);
+$('#theme-toggle').addEventListener('click', () => {
+  const next = THEMES[(THEMES.indexOf(currentTheme) + 1) % THEMES.length];
+  currentTheme = next;
+  try {
+    localStorage.setItem('pitwall:theme', next);
+  } catch { /* storage unavailable: still switch for this visit */ }
+  applyTheme(next);
+});
 
 // ---------------------------------------------------------------- go
 setThrottleListener((sec) => {

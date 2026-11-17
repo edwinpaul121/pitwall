@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' file:; style-src 'self' file: 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' file: data: https:; media-src https://livetiming.formula1.com; connect-src https://api.openf1.org https://api.open-meteo.com https://geocoding-api.open-meteo.com https://api.rss2json.com; base-uri 'none'; form-action 'none'; object-src 'none'" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="color-scheme" content="light dark" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Pit Wall — F1 Season & Race Predictor</title>
   <meta name="description" content="Live Formula 1 calendar, results, standings, weather and a Monte Carlo prediction for the next Grand Prix." />
@@ -31,9 +32,12 @@
         <li><a href="#results">Results</a></li>
         <li><a href="#calendar">Calendar</a></li>
       </ul>
+      <div class="gnav-actions">
+      <button class="gnav-refresh" id="theme-toggle" title="Theme: automatic" aria-label="Theme: automatic"></button>
       <button class="gnav-refresh" id="refresh" title="Refresh data" aria-label="Refresh data">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>
       </button>
+      </div>
     </div>
   </nav>
 
@@ -47,6 +51,7 @@
         <p class="lede center" id="progress">Getting the paddock ready…</p>
       </div>
     </section>
+    <br/>
 
     <section class="band band-gray" id="weekend" hidden></section>
     <section class="band band-white" id="weather" hidden></section>

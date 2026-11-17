@@ -8,7 +8,29 @@ export const pct = (p, digits = 0) => {
   if (v > 0 && v < 1) return '<1%';
   return `${v.toFixed(digits)}%`;
 };
-export const tint = (c, amt = 22) => `color-mix(in srgb, ${c} ${amt}%, #ffffff)`;
+// Team-colour wash over the page colour, so tinted cards work in light and dark mode.
+export const tint = (c, amt = 22) => `color-mix(in srgb, ${c} ${amt}%, var(--paper))`;
+
+// Some team colours drift toward a neighbour's when lightened or darkened
+// (Mercedes' teal reads as Aston Martin green, and goes murky in dark mode).
+// Per-team overrides: h = pinned OKLCH hue; vivid = use the brighter
+// --tint-*-vivid tokens so the card matches the team colour bar.
+const TINT = { Mercedes: { h: 188, vivid: true } };
+
+/**
+ * Inline `background` for a team-tinted card. Built in OKLCH from the team
+ * colour: keeps its hue (and some of its saturation) while setting lightness
+ * per theme via --tint-l / --tint-c / --tint-cmax. Older browsers fall back to
+ * the plain sRGB mix in the first declaration.
+ */
+export function tintBg(c, team) {
+  const o = TINT[team] || {};
+  const v = o.vivid ? '-vivid' : '';
+  return (
+    `background:${tint(c, 20)};` +
+    `background:oklch(from ${c} var(--tint-l${v}) min(calc(c * var(--tint-c${v})), var(--tint-cmax${v})) ${o.h ?? 'h'})`
+  );
+}
 export function trackTime(date, offsetMin, opts) {
   const shifted = new Date(date.getTime() + offsetMin * 60000);
   return shifted.toLocaleString(undefined, { timeZone: 'UTC', ...opts });
@@ -54,6 +76,7 @@ export function prettyOfficial(s) {
 export const ICON = {
   sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
   moon: '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
+  auto: '<circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17a8.5 8.5 0 0 0 0-17z" fill="currentColor"/>',
   partly: '<path d="M12 3v1.5M5.6 5.6l1 1M3 12h1.5M17.4 5.6l-1 1"/><path d="M8.5 11a3.5 3.5 0 0 1 6.8-1"/><path d="M7 20h10a3.5 3.5 0 0 0 0-7 5 5 0 0 0-9.6 1.4A3 3 0 0 0 7 20z"/>',
   cloud: '<path d="M7 19h10a4 4 0 0 0 .6-8A6 6 0 0 0 6 10.5 4.3 4.3 0 0 0 7 19z"/>',
   fog: '<path d="M4 10h16M3 14h18M6 18h12"/><path d="M7 6.5A5 5 0 0 1 16.5 7"/>',
